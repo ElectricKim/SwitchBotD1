@@ -1,0 +1,46 @@
+void setSwitchState(AsyncWebServerRequest *request, bool switchState, int angle) {
+  unsigned long currentTime = millis();
+  if (currentTime - lastRequestTime < debounceDelay) {
+    String jsonResponse = "{\"error\": \"요청이 너무 많습니다. 잠시 기다려 주세요.\"}";
+    AsyncWebServerResponse *response = request->beginResponse(429, "application/json", jsonResponse);
+    request->send(response);
+    return; // 요청이 너무 빠르므로 함수 종료
+  } else {
+    servo.write(angle);
+    delay(100);
+    servo.write(midAngle);
+    isSwitchOn = switchState;
+    lastRequestTime = currentTime;
+
+    String jsonResponse = "{\"isSwitchOn\": " + String(isSwitchOn ? "true" : "false") + "}";
+    AsyncWebServerResponse *response = request->beginResponse(200, "application/json", jsonResponse);
+    request->send(response);
+
+    // Serial.println("스위치 요청이 수신되었습니다");
+    // Serial.print("isSwitchOn: ");
+    // Serial.println(isSwitchOn);
+  }
+}
+
+void handleSwitchOn(AsyncWebServerRequest *request) {
+  setSwitchState(request, true, onAngle);
+}
+
+void handleSwitchOff(AsyncWebServerRequest *request) {
+  setSwitchState(request, false, offAngle);
+}
+
+void handleSwitch(AsyncWebServerRequest *request){
+  String jsonResponse = "{\"isSwitchOn\": " + String(isSwitchOn ? "true" : "false") + "}";
+  AsyncWebServerResponse *response = request->beginResponse(200, "application/json", jsonResponse);
+  request->send(response);
+}
+
+void handleRoot(AsyncWebServerRequest *request) {
+  AsyncWebServerResponse *response = request->beginResponse(200, "text/html", controlPage);
+  request->send(response);
+
+  // Serial.println("루트 요청이 수신되었습니다");
+  // Serial.print("isSwitchOn: ");
+  // Serial.println(isSwitchOn);
+}

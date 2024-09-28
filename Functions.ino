@@ -12,7 +12,9 @@ void setSwitchState(AsyncWebServerRequest *request, bool switchState, int angle)
     isSwitchOn = switchState;
     lastRequestTime = currentTime;
 
-    String jsonResponse = "{\"isSwitchOn\": " + String(isSwitchOn ? "true" : "false") + "}";
+    char jsonResponse[32];
+    snprintf(jsonResponse, sizeof(jsonResponse), "{\"isSwitchOn\": %s}", isSwitchOn ? "true" : "false");
+
     AsyncWebServerResponse *response = request->beginResponse(200, "application/json", jsonResponse);
     request->send(response);
 
@@ -31,13 +33,14 @@ void handleSwitchOff(AsyncWebServerRequest *request) {
 }
 
 void handleSwitch(AsyncWebServerRequest *request){
-  String jsonResponse = "{\"isSwitchOn\": " + String(isSwitchOn ? "true" : "false") + "}";
+  char jsonResponse[32];
+  snprintf(jsonResponse, sizeof(jsonResponse), "{\"isSwitchOn\": %s}", isSwitchOn ? "true" : "false");
   AsyncWebServerResponse *response = request->beginResponse(200, "application/json", jsonResponse);
   request->send(response);
 }
 
 void handleRoot(AsyncWebServerRequest *request) {
-  AsyncWebServerResponse *response = request->beginResponse(200, "text/html", controlPage);
+  AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", controlPage);
   request->send(response);
 
   // Serial.println("루트 요청이 수신되었습니다");

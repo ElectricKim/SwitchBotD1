@@ -18,7 +18,7 @@ unsigned long lastRequestTime = 0;
 const unsigned long debounceDelay = 1000;
 
 AsyncWebServer server(80);
-extern const char *controlPage;
+extern const char controlPage[] PROGMEM;
 
 void setSwitchState(AsyncWebServerRequest *request, bool switchState, int angle);
 void handleSwitchOn(AsyncWebServerRequest *request);

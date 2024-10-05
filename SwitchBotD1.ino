@@ -3,7 +3,6 @@
 #include <ESPAsyncWebServer.h>
 #include <Servo.h>
 
-// IP 주소와 같은 배열을 고정된 크기로 선언
 extern const uint8_t local_ip[4] PROGMEM;
 extern const uint8_t gateway[4] PROGMEM;
 extern const uint8_t subnet[4] PROGMEM;

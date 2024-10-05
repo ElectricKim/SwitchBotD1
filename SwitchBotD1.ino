@@ -16,7 +16,7 @@ const uint8_t offAngle PROGMEM = 114;
 const uint8_t midAngle PROGMEM = 90;
 bool isSwitchOn = false;
 unsigned long lastRequestTime = 0;
-const unsigned long debounceDelay = 1000; // PROGMEM 필요 없음
+const unsigned long debounceDelay = 1000;
 
 AsyncWebServer server(80);
 extern const char controlPage[] PROGMEM;

@@ -3,24 +3,25 @@
 #include <ESPAsyncWebServer.h>
 #include <Servo.h>
 
-extern IPAddress local_ip;
-extern IPAddress gateway;
-extern IPAddress subnet;
-extern const char *ssid;
-extern const char *password;
+// IP 주소와 같은 배열을 고정된 크기로 선언
+extern const uint8_t local_ip[4] PROGMEM;
+extern const uint8_t gateway[4] PROGMEM;
+extern const uint8_t subnet[4] PROGMEM;
+extern const char ssid[] PROGMEM;
+extern const char password[] PROGMEM;
 
 Servo servo;
-const int onAngle = 54;
-const int offAngle = 114;
-const int midAngle = 90;
+const uint8_t onAngle PROGMEM = 54;
+const uint8_t offAngle PROGMEM = 114;
+const uint8_t midAngle PROGMEM = 90;
 bool isSwitchOn = false;
 unsigned long lastRequestTime = 0;
-const unsigned long debounceDelay = 1000;
+const unsigned long debounceDelay = 1000; // PROGMEM 필요 없음
 
 AsyncWebServer server(80);
 extern const char controlPage[] PROGMEM;
 
-void setSwitchState(AsyncWebServerRequest *request, bool switchState, int angle);
+void setSwitchState(AsyncWebServerRequest *request, bool switchState, uint8_t angle);
 void handleSwitchOn(AsyncWebServerRequest *request);
 void handleSwitchOff(AsyncWebServerRequest *request);
 void handleSwitch(AsyncWebServerRequest *request);
@@ -28,12 +29,24 @@ void handleRoot(AsyncWebServerRequest *request);
 
 void setup() {
   Serial.begin(115200);
-
   servo.attach(D2);
-  servo.write(midAngle);
 
-  WiFi.config(local_ip, gateway, subnet);
-  WiFi.begin(ssid, password);
+  uint8_t midAngleValue;
+  memcpy_P(&midAngleValue, &midAngle, sizeof(midAngleValue));
+  servo.write(midAngleValue);
+
+  uint8_t ip[4];
+  memcpy_P(ip, local_ip, sizeof(ip));
+  WiFi.config(IPAddress(ip[0], ip[1], ip[2], ip[3]), 
+              IPAddress(gateway[0], gateway[1], gateway[2], gateway[3]), 
+              IPAddress(subnet[0], subnet[1], subnet[2], subnet[3]));
+  
+  char ssidBuffer[32];
+  char passwordBuffer[32];
+  strcpy_P(ssidBuffer, ssid);
+  strcpy_P(passwordBuffer, password);
+  
+  WiFi.begin(ssidBuffer, passwordBuffer);
   // Serial.print("WiFi에 연결 중...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);

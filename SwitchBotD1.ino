@@ -10,9 +10,9 @@ extern const char ssid[] PROGMEM;
 extern const char password[] PROGMEM;
 
 Servo servo;
-const uint8_t onAngle PROGMEM = 54;
-const uint8_t offAngle PROGMEM = 114;
-const uint8_t midAngle PROGMEM = 90;
+const uint8_t onAngle = 54;
+const uint8_t offAngle = 114;
+const uint8_t midAngle = 90;
 bool isSwitchOn = false;
 unsigned long lastRequestTime = 0;
 const unsigned long debounceDelay = 1000;
@@ -29,10 +29,7 @@ void handleRoot(AsyncWebServerRequest *request);
 void setup() {
   Serial.begin(115200);
   servo.attach(D2);
-
-  uint8_t midAngleValue;
-  memcpy_P(&midAngleValue, &midAngle, sizeof(midAngleValue));
-  servo.write(midAngleValue);
+  servo.write(midAngle);
 
   uint8_t ip[4];
   memcpy_P(ip, local_ip, sizeof(ip));

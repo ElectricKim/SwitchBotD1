@@ -26,15 +26,11 @@ void setSwitchState(AsyncWebServerRequest *request, bool switchState, uint8_t an
 }
 
 void handleSwitchOn(AsyncWebServerRequest *request) {
-    uint8_t onAngleValue;
-    memcpy_P(&onAngleValue, &onAngle, sizeof(onAngleValue));
-    setSwitchState(request, true, onAngleValue);
+    setSwitchState(request, true, onAngle);
 }
 
 void handleSwitchOff(AsyncWebServerRequest *request) {
-    uint8_t offAngleValue;
-    memcpy_P(&offAngleValue, &offAngle, sizeof(offAngleValue));
-    setSwitchState(request, false, offAngleValue);
+    setSwitchState(request, false, offAngle);
 }
 
 void handleSwitch(AsyncWebServerRequest *request) {
